@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมใบ้หวย 6 ตัว มหาเฮง</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: radial-gradient(circle at center, #2e1065 0%, #1e1b4b 50%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #facc15 0%, #ca8a04 100%);
+        }
+        .gold-border {
+            border: 2px solid rgba(234, 179, 8, 0.4);
+        }
+        .glass-card {
+            background: rgba(30, 27, 75, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(234, 179, 8, 0.2);
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(234, 179, 8, 0.8); }
+        }
+        .glow-effect {
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="py-6 px-4 text-center border-b border-yellow-500/20 bg-black/30 backdrop-blur-md">
+        <div class="max-w-4xl mx-auto flex flex-col items-center">
+            <div class="flex items-center gap-3 mb-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-yellow-400 text-3xl animate-bounce"></i>
+                <h1 class="text-3xl md:text-4xl font-extxl font-bold gold-gradient-text tracking-wide">โปรแกรมใบ้หวย 6 ตัว มหาเฮง</h1>
+                <i class="fa-solid fa-coins text-yellow-400 text-3xl animate-bounce"></i>
+            </div>
+            <p class="text-gray-300 text-sm md:text-base">ศาสตร์แห่งตัวเลข แม่นยำ ทรงพลัง เสริมโชคลาภ รับทรัพย์ล้านบาท งวดนี้รวย!</p>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-4xl w-full mx-auto px-4 mt-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-purple-950/60 p-2 rounded-2xl border border-yellow-500/30">
+            <button onclick="switchTab('generator')" id="btn-generator" class="tab-btn py-3 px-4 rounded-xl font-medium text-sm md:text-base flex items-center justify-center gap-2 transition-all bg-yellow-500 text-gray-950 shadow-lg font-bold">
+                <i class="fa-solid fa-dice"></i> สุ่ม 6 ตัวเด็ด
+            </button>
+            <button onclick="switchTab('siamsi')" id="btn-siamsi" class="tab-btn py-3 px-4 rounded-xl font-medium text-sm md:text-base flex items-center justify-center gap-2 transition-all text-yellow-300 hover:bg-purple-900/50">
+                <i class="fa-solid fa-hand-holding-heart"></i> เซียมซีมงคล
+            </button>
+            <button onclick="switchTab('name')" id="btn-name" class="tab-btn py-3 px-4 rounded-xl font-medium text-sm md:text-base flex items-center justify-center gap-2 transition-all text-yellow-300 hover:bg-purple-900/50">
+                <i class="fa-solid fa-user-pen"></i> ทำนายจากชื่อ
+            </button>
+            <button onclick="switchTab('saved')" id="btn-saved" class="tab-btn py-3 px-4 rounded-xl font-medium text-sm md:text-base flex items-center justify-center gap-2 transition-all text-yellow-300 hover:bg-purple-900/50">
+                <i class="fa-solid fa-bookmark"></i> เลขที่บันทึก (<span id="saved-count">0</span>)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6">
+
+        <!-- TAB 1: GENERATOR -->
+        <section id="tab-generator" class="tab-content space-y-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8 text-center glow-effect">
+                <h2 class="text-xl md:text-2xl font-bold text-yellow-300 mb-4">สุ่มเลขเด็ด 6 ตัวตรง เสริมดวงเศรษฐี</h2>
+                <p class="text-gray-300 text-sm mb-6">กดปุ่มด้านล่างเพื่อรับพลังงานตัวเลขมงคลประจำงวดนี้ พร้อมเลขท้ายและเลขหน้าอัตโนมัติ</p>
+
+                <!-- 6 Digit Display -->
+                <div id="digit-container" class="flex justify-center items-center gap-2 md:gap-4 my-8">
+                    <div class="w-12 h-16 md:w-16 md:h-24 bg-gradient-to-b from-purple-900 to-indigo-950 border-2 border-yellow-400 rounded-2xl flex items-center justify-center text-3xl md:text-5xl font-bold text-yellow-300 shadow-inner slot-digit">0</div>
+                    <div class="w-12 h-16 md:w-16 md:h-24 bg-gradient-to-b from-purple-900 to-indigo-950 border-2 border-yellow-400 rounded-2xl flex items-center justify-center text-3xl md:text-5xl font-bold text-yellow-300 shadow-inner slot-digit">0</div>
+                    <div class="w-12 h-16 md:w-16 md:h-24 bg-gradient-to-b from-purple-900 to-indigo-950 border-2 border-yellow-400 rounded-2xl flex items-center justify-center text-3xl md:text-5xl font-bold text-yellow-300 shadow-inner slot-digit">0</div>
+                    <div class="text-yellow-400 text-2xl md:text-4xl font-bold mx-1">-</div>
+                    <div class="w-12 h-16 md:w-16 md:h-24 bg-gradient-to-b from-purple-900 to-indigo-950 border-2 border-yellow-400 rounded-2xl flex items-center justify-center text-3xl md:text-5xl font-bold text-yellow-300 shadow-inner slot-digit">0</div>
+                    <div class="w-12 h-16 md:w-16 md:h-24 bg-gradient-to-b from-purple-900 to-indigo-950 border-2 border-yellow-400 rounded-2xl flex items-center justify-center text-3xl md:text-5xl font-bold text-yellow-300 shadow-inner slot-digit">0</div>
+                    <div class="w-12 h-16 md:w-16 md:h-24 bg-gradient-to-b from-purple-900 to-indigo-950 border-2 border-yellow-400 rounded-2xl flex items-center justify-center text-3xl md:text-5xl font-bold text-yellow-300 shadow-inner slot-digit">0</div>
+                </div>
+
+                <!-- Sub-numbers breakdown -->
+                <div id="breakdown-box" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 bg-black/40 p-4 rounded-2xl border border-yellow-500/20 hidden">
+                    <div class="bg-purple-900/40 p-3 rounded-xl border border-yellow-500/20">
+                        <span class="block text-xs text-gray-400">เลขหน้า 3 ตัว</span>
+                        <span id="res-front3" class="text-xl font-bold text-yellow-300">-</span>
+                    </div>
+                    <div class="bg-purple-900/40 p-3 rounded-xl border border-yellow-500/20">
+                        <span class="block text-xs text-gray-400">เลขท้าย 3 ตัว</span>
+                        <span id="res-back3" class="text-xl font-bold text-yellow-300">-</span>
+                    </div>
+                    <div class="bg-purple-900/40 p-3 rounded-xl border border-yellow-500/20">
+                        <span class="block text-xs text-gray-400">เลขท้าย 2 ตัว</span>
+                        <span id="res-back2" class="text-xl font-bold text-yellow-300">-</span>
+                    </div>
+                    <div class="bg-purple-900/40 p-3 rounded-xl border border-yellow-500/20">
+                        <span class="block text-xs text-gray-400">วิ่งบน / วิ่งล่าง</span>
+                        <span id="res-run" class="text-xl font-bold text-yellow-300">-</span>
+                    </div>
+                </div>
+
+                <!-- Meaning / Interpretation -->
+                <div id="meaning-box" class="mb-8 p-4 rounded-xl bg-purple-900/30 border border-yellow-500/30 text-sm md:text-base text-yellow-200 hidden">
+                    <i class="fa-solid fa-quote-left text-yellow-400 mr-2"></i>
+                    <span id="meaning-text">คำทำนายจะปรากฏที่นี่...</span>
+                    <i class="fa-solid fa-quote-right text-yellow-400 ml-2"></i>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="generateLuckyNumbers()" class="gold-gradient-bg text-gray-950 font-extrabold py-4 px-8 rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 text-lg">
+                        <i class="fa-solid fa-rotate text-xl"></i> สุ่มเลขมงคล 6 ตัว
+                    </button>
+                    <button id="save-btn" onclick="saveCurrentNumber()" class="bg-purple-800 border border-yellow-400 text-yellow-300 font-bold py-4 px-8 rounded-2xl shadow-xl hover:bg-purple-700 transition-all flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i class="fa-solid fa-bookmark"></i> บันทึกเลขนี้
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: SIANSI -->
+        <section id="tab-content-siamsi" class="tab-content space-y-6 hidden">
+            <div class="glass-card rounded-3xl p-6 md:p-8 text-center">
+                <h2 class="text-xl md:text-2xl font-bold text-yellow-300 mb-4">เซียมซีเสี่ยงทายตัวเลขมงคล</h2>
+                <p class="text-gray-300 text-sm mb-6">ตั้งจิตอธิษฐาน นึกถึงสิ่งศักดิ์สิทธิ์ แล้วกดเขย่าติ้วเซียมซีเพื่อรับเลขเด็ด 6 ตัว</p>
+
+                <div class="my-8 flex flex-col items-center justify-center">
+                    <div id="siamsi-cylinder" class="w-32 h-44 bg-gradient-to-b from-yellow-600 via-yellow-700 to-yellow-900 rounded-2xl border-4 border-yellow-300 flex items-center justify-center shadow-2xl relative">
+                        <i class="fa-solid fa-feather-pointed text-4xl text-yellow-200 animate-bounce-short"></i>
+                        <div class="absolute -top-6 w-36 h-8 bg-yellow-500 rounded-full border-2 border-yellow-200"></div>
+                    </div>
+                </div>
+
+                <button onclick="shakeSiamsi()" class="gold-gradient-bg text-gray-950 font-extrabold py-4 px-8 rounded-2xl shadow-xl hover:opacity-90 transition-all inline-flex items-center gap-3 text-lg">
+                    <i class="fa-solid fa-hand-fist"></i> เขย่าเซียมซีเสี่ยงทาย
+                </button>
+
+                <!-- Siamsi Result Modal / Box -->
+                <div id="siamsi-result" class="mt-8 p-6 rounded-2xl bg-black/50 border border-yellow-500/40 text-left hidden">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 id="siamsi-title" class="text-lg font-bold text-yellow-400">ใบเซียมซีที่ --</h3>
+                        <span id="siamsi-badge" class="bg-yellow-500/20 text-yellow-300 text-xs px-3 py-1 rounded-full border border-yellow-500/30">ความเฮงระดับ 5 ดาว</span>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-extrabold text-center text-yellow-300 my-4 tracking-widest bg-purple-950/80 py-3 rounded-xl border border-yellow-400/50" id="siamsi-numbers">
+                        0-0-0-0-0-0
+                    </div>
+                    <p id="siamsi-desc" class="text-gray-200 text-sm md:text-base leading-relaxed"></p>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="saveSiamsiNumber()" class="bg-yellow-500 text-gray-950 font-bold px-4 py-2 rounded-xl text-sm hover:bg-yellow-400 flex items-center gap-2">
+                            <i class="fa-solid fa-bookmark"></i> บันทึกเลขนี้
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: NAME PREDICTION -->
+        <section id="tab-content-name" class="tab-content space-y-6 hidden">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <h2 class="text-xl md:text-2xl font-bold text-yellow-300 mb-2 text-center">ทำนายเลขเด็ดจากชื่อ-นามสกุล และวันเกิด</h2>
+                <p class="text-gray-300 text-sm mb-6 text-center">ถอดรหัสตัวเลขจากดวงชะตาเฉพาะตัวคุณ</p>
+
+                <div class="space-y-4 max-w-lg mx-auto">
+                    <div>
+                        <label class="block text-sm text-yellow-300 font-medium mb-1">ชื่อ - นามสกุล หรือชื่อเล่น:</label>
+                        <input type="text" id="input-name" placeholder="เช่น สมชาย ใจดี หรือ เศรษฐีใหม่" class="w-full bg-purple-950/80 border border-yellow-500/40 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-yellow-300 font-medium mb-1">วันเกิดของคุณ:</label>
+                        <select id="input-day" class="w-full bg-purple-950/80 border border-yellow-500/40 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-400">
+                            <option value="1">วันอาทิตย์</option>
+                            <option value="2">วันจันทร์</option>
+                            <option value="3">วันอังคาร</option>
+                            <option value="4">วันพุธ (กลางวัน)</option>
+                            <option value="5">วันพุธ (กลางคืน)</option>
+                            <option value="6">วันพฤหัสบดี</option>
+                            <option value="7">วันศุกร์</option>
+                            <option value="8">วันเสาร์</option>
+                        </select>
+                    </div>
+                    <button onclick="calculateNameFortune()" class="w-full gold-gradient-bg text-gray-950 font-extrabold py-4 rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3 text-lg mt-4">
+                        <i class="fa-solid fa-calculator"></i> คำนวณเลขเด็ดประจำตัว
+                    </button>
+                </div>
+
+                <!-- Name Prediction Result -->
+                <div id="name-result-box" class="mt-8 p-6 rounded-2xl bg-black/50 border border-yellow-500/40 hidden text-center">
+                    <h3 class="text-base text-gray-300 mb-1">เลขมงคล 6 ตัวจากดวงชะตาของ <span id="disp-name" class="text-yellow-400 font-bold"></span></h3>
+                    <div class="text-3xl md:text-4xl font-extrabold text-yellow-300 my-4 tracking-widest bg-purple-950/80 py-4 rounded-xl border border-yellow-400/50" id="name-lucky-num">
+                        0-0-0-0-0-0
+                    </div>
+                    <p id="name-fortune-desc" class="text-gray-200 text-sm md:text-base mb-4"></p>
+                    <button onclick="saveNameNumber()" class="gold-gradient-bg text-gray-950 font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 inline-flex items-center gap-2">
+                        <i class="fa-solid fa-bookmark"></i> บันทึกเลขนี้
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: SAVED NUMBERS -->
+        <section id="tab-content-saved" class="tab-content space-y-6 hidden">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-yellow-300">เลขเด็ดที่คุณบันทึกไว้</h2>
+                    <button onclick="clearSavedNumbers()" class="bg-red-900/60 hover:bg-red-800 text-red-200 border border-red-500/40 text-xs px-3 py-2 rounded-xl transition-all">
+                        <i class="fa-solid fa-trash-can mr-1"></i> ลบทั้งหมด
+                    </button>
+                </div>
+
+                <div id="saved-list-container" class="space-y-3">
+                    <!-- Dynamic list items -->
+                    <div class="text-center py-12 text-gray-400" id="empty-saved">
+                        <i class="fa-regular fa-folder-open text-4xl mb-3 text-yellow-500/50"></i>
+                        <p>ยังไม่มีเลขที่บันทึกไว้ ลองสุ่มหรือเสี่ยงทายแล้วกดบันทึกได้เลย!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Toast / Modal Message -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-purple-900 border border-yellow-400 text-yellow-200 px-6 py-3 rounded-2xl shadow-2xl transform translate-y-32 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+        <i class="fa-solid fa-circle-check text-yellow-400 text-xl"></i>
+        <span id="toast-msg">บันทึกเลขสำเร็จ!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center text-xs text-gray-400 border-t border-yellow-500/10 bg-black/40 mt-auto">
+        <p>© 2026 โปรแกรมใบ้หวย 6 ตัว มหาเฮง | สร้างขึ้นเพื่อความบันเทิงและเสริมโชคลาภ ขอให้ทุกท่านถูกหวยรวยเบอร์</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Global variables for current numbers
+        let currentGeneratedNumber = "";
+        let currentSiamsiNumber = "";
+        let currentNameNumber = "";
+        let savedNumbers = JSON.parse(localStorage.getItem('saved_lottery_numbers')) || [];
+
+        // Initialize saved count badge on load
+        updateSavedCount();
+
+        // Tab Switching function
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Remove active style from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-yellow-500', 'text-gray-950', 'font-bold');
+                btn.classList.add('text-yellow-300', 'hover:bg-purple-900/50');
+            });
+
+            // Show selected tab content
+            if (tabName === 'generator') {
+                document.getElementById('tab-generator').classList.remove('hidden');
+                document.getElementById('btn-generator').classList.add('bg-yellow-500', 'text-gray-950', 'font-bold');
+                document.getElementById('btn-generator').classList.remove('text-yellow-300', 'hover:bg-purple-900/50');
+            } else if (tabName === 'siamsi') {
+                document.getElementById('tab-content-siamsi').classList.remove('hidden');
+                document.getElementById('btn-siamsi').classList.add('bg-yellow-500', 'text-gray-950', 'font-bold');
+                document.getElementById('btn-siamsi').classList.remove('text-yellow-300', 'hover:bg-purple-900/50');
+            } else if (tabName === 'name') {
+                document.getElementById('tab-content-name').classList.remove('hidden');
+                document.getElementById('btn-name').classList.add('bg-yellow-500', 'text-gray-950', 'font-bold');
+                document.getElementById('btn-name').classList.remove('text-yellow-300', 'hover:bg-purple-900/50');
+            } else if (tabName === 'saved') {
+                document.getElementById('tab-content-saved').classList.remove('hidden');
+                document.getElementById('btn-saved').classList.add('bg-yellow-500', 'text-gray-950', 'font-bold');
+                document.getElementById('btn-saved').classList.remove('text-yellow-300', 'hover:bg-purple-900/50');
+                renderSavedList();
+            }
+        }
+
+        // Toast Notification System (Replaces alert)
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3000);
+        }
+
+        // 1. Generate 6 Digit Lucky Numbers
+        function generateLuckyNumbers() {
+            const digitElements = document.querySelectorAll('.slot-digit');
+            
+            // Animation effect simulating rolling
+            let counter = 0;
+            const rollInterval = setInterval(() => {
+                digitElements.forEach(el => {
+                    el.innerText = Math.floor(Math.random() * 10);
+                });
+                counter++;
+                if (counter > 15) {
+                    clearInterval(rollInterval);
+                    finalizeNumbers();
+                }
+            }, 50);
+        }
+
+        function finalizeNumbers() {
+            let digits = [];
+            for (let i = 0; i < 6; i++) {
+                digits.push(Math.floor(Math.random() * 10));
+            }
+            currentGeneratedNumber = digits.join('');
+
+            const digitElements = document.querySelectorAll('.slot-digit');
+            digitElements.forEach((el, index) => {
+                el.innerText = digits[index];
+                el.classList.add('scale-110', 'text-white');
+                setTimeout(() => el.classList.remove('scale-110', 'text-white'), 300);
+            });
+
+            // Calculate breakdowns
+            const numStr = currentGeneratedNumber;
+            const front3 = numStr.substring(0, 3);
+            const back3 = numStr.substring(3, 6);
+            const back2 = numStr.substring(4, 6);
+            const runNum = digits[Math.floor(Math.random() * digits.length)];
+
+            document.getElementById('res-front3').innerText = front3;
+            document.getElementById('res-back3').innerText = back3;
+            document.getElementById('res-back2').innerText = back2;
+            document.getElementById('res-run').innerText = runNum;
+            document.getElementById('breakdown-box').classList.remove('hidden');
+
+            // Generate meaning
+            const meanings = [
+                "เลขชุดนี้มีพลังงานแห่งโชคลาภด้านการค้าขายและการลงทุน เกณฑ์รับทรัพย์ก้อนโตจากแดนไกล",
+                "เลขมงคลเสริมบารมี มีสิ่งศักดิ์สิทธิ์คุ้มครอง โชคลาภพุ่งตรงมาจากเลขที่บ้านหรือยานพาหนะ",
+                "ดวงเฮงพุ่งถึงขีดสุด มีเกณฑ์ถูกรางวัลใหญ่จากความฝันหรือลางสังหรณ์ในคืนนี้",
+                "เลขพลังธาตุทอง เด่นเรื่องการเสี่ยงโชคผ่านคนแปลกหน้าหรือผู้หญิงผิวสองสีนำโชคให้",
+                "เลขมหาเฮงเสริมทรัพย์ การเงินคล่องตัว โอกาสรับทรัพย์รางวัลที่ 1 อยู่แค่เอื้อม"
+            ];
+            const randomMeaning = meanings[Math.floor(Math.random() * meanings.length)];
+            document.getElementById('meaning-text').innerText = randomMeaning;
+            document.getElementById('meaning-box').classList.remove('hidden');
+
+            // Enable save button
+            document.getElementById('save-btn').removeAttribute('disabled');
+        }
+
+        function saveCurrentNumber() {
+            if (!currentGeneratedNumber) return;
+            addSavedNumber(currentGeneratedNumber, "สุ่มเลขมงคล 6 ตัว");
+        }
+
+        // 2. Siamsi Shaking Logic
+        function shakeSiamsi() {
+            const cylinder = document.getElementById('siamsi-cylinder');
+            cylinder.classList.add('animate-bounce');
+            
+            setTimeout(() => {
+                cylinder.classList.remove('animate-bounce');
+                
+                // Generate random siamsi result
+                let digits = [];
+                for (let i = 0; i < 6; i++) {
+                    digits.push(Math.floor(Math.random() * 10));
+                }
+                currentSiamsiNumber = digits.join('');
+                const stickNo = Math.floor(Math.random() * 28) + 1;
+
+                document.getElementById('siamsi-title').innerText = `ใบเซียมซีมงคล ใบที่ ${stickNo}`;
+                document.getElementById('siamsi-numbers').innerText = currentSiamsiNumber.split('').join(' - ');
+                
+                const siamsiTexts = [
+                    "ใบนี้ท่านว่าดวงชะตากำลังรุ่งโรจน์ เปรียบดั่งมังกรทองผงาดฟ้า โชคลาภหลั่งไหลเข้ามาไม่ขาดสาย จงซื้อเลขท้ายด้วยความมั่นใจ",
+                    "อุปสรรคใดๆ กำลังจะผ่านพ้น เทวดาอำนวยพรให้ท่านได้รับโชคใหญ่จากเลขที่เกี่ยวข้องกับผู้มีพระคุณ",
+                    "ความเพียรพยายามที่ผ่านมาจะสัมฤทธิ์ผล งวดนี้มีเกณฑ์รับทรัพย์ก้อนโต เสริมบุญด้วยการทำทานจะยิ่งเฮงคูณสอง"
+                ];
+                document.getElementById('siamsi-desc').innerText = siamsiTexts[Math.floor(Math.random() * siamsiTexts.length)];
+                document.getElementById('siamsi-result').classList.remove('hidden');
+                showToast("เขย่าเซียมซีสำเร็จ!");
+            }, 1000);
+        }
+
+        function saveSiamsiNumber() {
+            if (!currentSiamsiNumber) return;
+            addSavedNumber(currentSiamsiNumber, "เซียมซีเสี่ยงทาย");
+        }
+
+        // 3. Name & Birthday Prediction Logic
+        function calculateNameFortune() {
+            const nameInput = document.getElementById('input-name').value.trim();
+            const dayVal = document.getElementById('input-day').value;
+
+            if (!nameInput) {
+                showToast("กรุณากรอกชื่อหรือชื่อเล่นก่อนทำนายครับ");
+                return;
+            }
+
+            // Generate deterministic yet pseudo-random digits based on name length and day
+            let seed = 0;
+            for (let i = 0; i < nameInput.length; i++) {
+                seed += nameInput.charCodeAt(i);
+            }
+            seed = seed * parseInt(dayVal);
+
+            let digits = [];
+            for (let i = 0; i < 6; i++) {
+                seed = (seed * 9301 + 49297) % 233280;
+                let rnd = Math.floor((seed / 233280) * 10);
+                digits.push(rnd);
+            }
+            currentNameNumber = digits.join('');
+
+            document.getElementById('disp-name').innerText = nameInput;
+            document.getElementById('name-lucky-num').innerText = currentNameNumber.split('').join(' - ');
+            
+            const desc = `ผลการถอดรหัสจากดวงชะตาของ ${nameInput} ผู้เกิดในวันมงคล ส่งผลให้พลังงานตัวเลข 6 ตัวนี้สอดคล้องกับดวงการเงิน โชคลาภ และความสำเร็จในงวดนี้อย่างยิ่งยวด`;
+            document.getElementById('name-fortune-desc').innerText = desc;
+            document.getElementById('name-result-box').classList.remove('hidden');
+            showToast("คำนวณดวงชะตาสำเร็จ!");
+        }
+
+        function saveNameNumber() {
+            if (!currentNameNumber) return;
+            const nameInput = document.getElementById('input-name').value.trim();
+            addSavedNumber(currentNameNumber, `ทำนายจากชื่อ: ${nameInput}`);
+        }
+
+        // 4. Saved Numbers Management
+        function addSavedNumber(num, category) {
+            // Check if already exists
+            if (savedNumbers.some(item => item.number === num)) {
+                showToast("เลขนี้ถูกบันทึกไว้แล้วในระบบ");
+                return;
+            }
+
+            const newItem = {
+                number: num,
+                category: category,
+                date: new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            };
+
+            savedNumbers.unshift(newItem);
+            localStorage.setItem('saved_lottery_numbers', JSON.stringify(savedNumbers));
+            updateSavedCount();
+            showToast("บันทึกเลขเด็ดสำเร็จ!");
+        }
+
+        function updateSavedCount() {
+            document.getElementById('saved-count').innerText = savedNumbers.length;
+        }
+
+        function renderSavedList() {
+            const container = document.getElementById('saved-list-container');
+            if (savedNumbers.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-regular fa-folder-open text-4xl mb-3 text-yellow-500/50"></i>
+                        <p>ยังไม่มีเลขที่บันทึกไว้ ลองสุ่มหรือเสี่ยงทายแล้วกดบันทึกได้เลย!</p>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            savedNumbers.forEach((item, index) => {
+                const formattedNum = `${item.number.substring(0,3)} - ${item.number.substring(3,6)}`;
+                html += `
+                    <div class="bg-purple-950/60 border border-yellow-500/30 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-yellow-500/20 text-yellow-300 text-xs px-2.5 py-0.5 rounded-full border border-yellow-500/30">${item.category}</span>
+                                <span class="text-xs text-gray-400">${item.date}</span>
+                            </div>
+                            <div class="text-2xl md:text-3xl font-extrabold text-yellow-300 tracking-wider">${formattedNum}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyToClipboard('${item.number}')" class="bg-purple-900 hover:bg-purple-800 text-yellow-300 border border-yellow-500/30 px-3.5 py-2 rounded-xl text-sm transition-all flex items-center gap-1.5">
+                                <i class="fa-regular fa-copy"></i> คัดลอก
+                            </button>
+                            <button onclick="deleteSavedItem(${index})" class="bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-500/30 px-3.5 py-2 rounded-xl text-sm transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-trash"></i> ลบ
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(`คัดลอกเลข ${text} สำเร็จ!`);
+            } catch (err) {
+                showToast("ไม่สามารถคัดลอกได้");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function deleteSavedItem(index) {
+            savedNumbers.splice(index, 1);
+            localStorage.setItem('saved_lottery_numbers', JSON.stringify(savedNumbers));
+            updateSavedCount();
+            renderSavedList();
+            showToast("ลบรายการเรียบร้อยแล้ว");
+        }
+
+        function clearSavedNumbers() {
+            if (savedNumbers.length === 0) return;
+            savedNumbers = [];
+            localStorage.removeItem('saved_lottery_numbers');
+            updateSavedCount();
+            renderSavedList();
+            showToast("ล้างรายการทั้งหมดแล้ว");
+        }
+    </script>
+</body>
+</html>
